@@ -90,7 +90,7 @@ const SignIn = () => {
     navigate('/todo');
   };
 
-  const toLists = (e) => {
+  const handleUserInfo = (e) => {
     e.preventDefault();
 
     if (enteredId !== userInfo.id || enteredPw !== userInfo.pw) {
@@ -107,7 +107,7 @@ const SignIn = () => {
 
   return (
     <SignInWrapper>
-      <SignInForm onSubmit={toLists}>
+      <SignInForm onSubmit={handleUserInfo}>
         <IdInput
           type="text"
           name="id"
