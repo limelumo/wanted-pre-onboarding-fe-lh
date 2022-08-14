@@ -1,9 +1,88 @@
+import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import styled from 'styled-components';
 
+// 임시 유저 정보
+const userInfo = {
+  id: 'test@test.com',
+  pw: '1234qwer',
+};
+
 const SignIn = () => {
+  const navigate = useNavigate();
+
+  const [enteredId, setEnteredId] = useState('');
+  const [enteredPw, setEnteredPw] = useState('');
+
+  const [isValidId, setIsValidId] = useState(false);
+  const [isValidPw, setIsValidPw] = useState(false);
+
+  const [isIdTouched, setIsIdTouched] = useState(false);
+  const [isPwTouched, setIsPwTouched] = useState(false);
+
+  const [btnActive, setSignInBtnActive] = useState(false);
+
+  const [error, setError] = useState(false);
+
+  const idRef = useRef('');
+
+  const idInvalidClass = !isValidId && isIdTouched;
+  const pwInvalidClass = !isValidPw && isPwTouched;
+
+  useEffect(() => {
+    // token 있을 시 todo로 re-direct
+
+    if (isValidId && isValidPw) {
+      setSignInBtnActive(true);
+    } else {
+      setSignInBtnActive(false);
+    }
+
+    if (enteredId.trim() === '') setIsValidId(false);
+    if (enteredPw.trim() === '') setIsValidPw(false);
+    if (enteredId || enteredPw) setError(false);
+  }, [isValidId, isValidPw, enteredId, enteredPw]);
+
+  const handleIdChange = (e) => {
+    setEnteredId(e.target.value);
+    if (e.target.value.includes('@')) setIsValidId(true);
+  };
+
+  const handlePwChange = (e) => {
+    setEnteredPw(e.target.value);
+    if (e.target.value.length >= 8) setIsValidPw(true);
+  };
+
+  const handleIdBlur = () => {
+    setIsIdTouched(true);
+  };
+
+  const handlePwBlur = () => {
+    setIsPwTouched(true);
+  };
+
+
+
+  const resetUerInfo = () => {
+    setEnteredId('');
+    setEnteredPw('');
+    idRef.current.focus();
+  };
+
   const toLists = (e) => {
     e.preventDefault();
-    alert('sign-in');
+
+    if (enteredId !== userInfo.id || enteredPw !== userInfo.pw) {
+      setError(true);
+      resetUerInfo();
+      return;
+    }
+
+    // 로그인 api 호출, 올바른 응답 시 todo로 이동
+    // 응답받은 JWT는 local storage 저장
+    // local storage에 token 있을 시 todo로 이동
+    navigate('/todo');
   };
 
   const handleSignUp = () => {
@@ -13,12 +92,32 @@ const SignIn = () => {
   return (
     <SignInWrapper>
       <SignInForm onSubmit={toLists}>
-        <input type="text" placeholder="e-mail" />
-        <input type="password" placeholder="password" />
+        <IdInput
+          type="text"
+          name="id"
+          placeholder="e-mail"
+          value={enteredId}
+          onChange={handleIdChange}
+          outLine={idInvalidClass}
+          onBlur={handleIdBlur}
+          ref={idRef}
+        />
 
-        <UserError>올바르지 않은 이메일 혹은 비밀번호입니다.</UserError>
+        <PwInput
+          type="password"
+          name="password"
+          placeholder="password"
+          value={enteredPw}
+          onChange={handlePwChange}
+          outLine={pwInvalidClass}
+          onBlur={handlePwBlur}
+        />
 
-        <SignInBtn>Sign-in</SignInBtn>
+        <UserError>{error && '올바르지 않은 이메일 혹은 비밀번호입니다.'}</UserError>
+
+        <SignInBtn disabled={!btnActive} color={btnActive ? btnActive.toString() : undefined}>
+          Sign-in
+        </SignInBtn>
       </SignInForm>
 
       <Divider />
@@ -45,6 +144,26 @@ const SignInForm = styled.form`
   width: 24em;
   display: flex;
   flex-direction: column;
+`;
+
+const Input = styled.input`
+  background-color: #eee;
+  border: 1px solid #ccc;
+  border-radius: 0.3em;
+  padding: 0.8em 0 0.8em 0.5em;
+  margin-bottom: 0.5em;
+
+  &:focus {
+    outline: none;
+  }
+`;
+
+const IdInput = styled(Input)`
+  border: 1px solid ${(prop) => (prop.outLine ? 'red' : '#dbdbdb')};
+`;
+
+const PwInput = styled(Input)`
+  border: 1px solid ${(prop) => (prop.outLine ? 'red' : '#dbdbdb')};
 `;
 
 const SignInBtn = styled.button`
