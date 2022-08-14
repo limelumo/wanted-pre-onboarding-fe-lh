@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 // 임시 유저 정보
 const userInfo = {
-  id: 'test@test.com',
+  id: 'test1234@test.com',
   pw: '1234qwer',
 };
 
@@ -31,8 +31,6 @@ const SignIn = () => {
   const pwInvalidClass = !isValidPw && isPwTouched;
 
   useEffect(() => {
-    // token 있을 시 todo로 re-direct
-
     if (isValidId && isValidPw) {
       setSignInBtnActive(true);
     } else {
@@ -62,12 +60,34 @@ const SignIn = () => {
     setIsPwTouched(true);
   };
 
-
-
   const resetUerInfo = () => {
     setEnteredId('');
     setEnteredPw('');
     idRef.current.focus();
+  };
+
+  const saveUserInfo = (id, pw, token) => {
+    localStorage.setItem('id', id);
+    localStorage.setItem('password', pw);
+    localStorage.setItem('token', token);
+  };
+
+  const submitUserInfo = async () => {
+    const response = await fetch('https://5co7shqbsf.execute-api.ap-northeast-2.amazonaws.com/production/auth/signin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: enteredId, password: enteredPw }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Something went wrong!');
+    }
+
+    const responseData = await response.json();
+    const token = responseData.access_token;
+
+    saveUserInfo(enteredId, enteredPw, token);
+    navigate('/todo');
   };
 
   const toLists = (e) => {
@@ -78,15 +98,11 @@ const SignIn = () => {
       resetUerInfo();
       return;
     }
-
-    // 로그인 api 호출, 올바른 응답 시 todo로 이동
-    // 응답받은 JWT는 local storage 저장
-    // local storage에 token 있을 시 todo로 이동
-    navigate('/todo');
+    submitUserInfo();
   };
 
   const handleSignUp = () => {
-    alert('sign-up');
+    navigate('/sign-up');
   };
 
   return (
