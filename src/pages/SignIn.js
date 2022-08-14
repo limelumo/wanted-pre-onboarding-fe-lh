@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import styled from 'styled-components';
+import useInput from '../hooks/useInput';
 
 // 임시 유저 정보
 const userInfo = {
@@ -10,61 +11,36 @@ const userInfo = {
 };
 
 const SignIn = () => {
-  const navigate = useNavigate();
+  const {
+    value: enteredId,
+    isValid: isValidId,
+    error,
+    isInvalid: idInvalidClass,
+    handleBlur: handleIdBlur,
+    handleChange: handleIdChange,
+    reset: resetId,
+  } = useInput((value) => value.includes('@'));
 
-  const [enteredId, setEnteredId] = useState('');
-  const [enteredPw, setEnteredPw] = useState('');
+  const {
+    value: enteredPw,
+    isValid: isValidPw,
+    isInvalid: pwInvalidClass,
+    handleBlur: handlePwBlur,
+    handleChange: handlePwChange,
+    reset: resetPw,
+  } = useInput((value) => value.length >= 8);
 
-  const [isValidId, setIsValidId] = useState(false);
-  const [isValidPw, setIsValidPw] = useState(false);
-
-  const [isIdTouched, setIsIdTouched] = useState(false);
-  const [isPwTouched, setIsPwTouched] = useState(false);
-
-  const [btnActive, setSignInBtnActive] = useState(false);
-
-  const [error, setError] = useState(false);
+  const [btnActive, setBtnActive] = useState(false);
 
   const idRef = useRef('');
 
-  const idInvalidClass = !isValidId && isIdTouched;
-  const pwInvalidClass = !isValidPw && isPwTouched;
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (isValidId && isValidPw) {
-      setSignInBtnActive(true);
-    } else {
-      setSignInBtnActive(false);
-    }
-
-    if (enteredId.trim() === '') setIsValidId(false);
-    if (enteredPw.trim() === '') setIsValidPw(false);
-    if (enteredId || enteredPw) setError(false);
+    if (isValidId && isValidPw) setBtnActive(true);
+    if (!isValidId || !isValidPw) setBtnActive(false);
+    if (enteredId === '' || enteredPw === '') setBtnActive(false);
   }, [isValidId, isValidPw, enteredId, enteredPw]);
-
-  const handleIdChange = (e) => {
-    setEnteredId(e.target.value);
-    if (e.target.value.includes('@')) setIsValidId(true);
-  };
-
-  const handlePwChange = (e) => {
-    setEnteredPw(e.target.value);
-    if (e.target.value.length >= 8) setIsValidPw(true);
-  };
-
-  const handleIdBlur = () => {
-    setIsIdTouched(true);
-  };
-
-  const handlePwBlur = () => {
-    setIsPwTouched(true);
-  };
-
-  const resetUerInfo = () => {
-    setEnteredId('');
-    setEnteredPw('');
-    idRef.current.focus();
-  };
 
   const saveUserInfo = (id, pw, token) => {
     localStorage.setItem('id', id);
@@ -93,9 +69,10 @@ const SignIn = () => {
   const handleUserInfo = (e) => {
     e.preventDefault();
 
-    if (enteredId !== userInfo.id || enteredPw !== userInfo.pw) {
-      setError(true);
-      resetUerInfo();
+    if (userInfo.id !== enteredId || userInfo.pw !== enteredPw) {
+      resetId();
+      resetPw();
+      idRef.current.focus();
       return;
     }
     submitUserInfo();
@@ -110,7 +87,6 @@ const SignIn = () => {
       <SignInForm onSubmit={handleUserInfo}>
         <IdInput
           type="text"
-          name="id"
           placeholder="e-mail"
           value={enteredId}
           onChange={handleIdChange}
@@ -121,7 +97,6 @@ const SignIn = () => {
 
         <PwInput
           type="password"
-          name="password"
           placeholder="password"
           value={enteredPw}
           onChange={handlePwChange}
