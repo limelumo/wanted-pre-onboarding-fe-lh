@@ -85,7 +85,7 @@ const SignIn = () => {
   return (
     <SignInWrapper>
       <SignInForm onSubmit={handleUserInfo}>
-        <IdInput
+        <Input
           type="text"
           placeholder="e-mail"
           value={enteredId}
@@ -95,7 +95,7 @@ const SignIn = () => {
           ref={idRef}
         />
 
-        <PwInput
+        <Input
           type="password"
           placeholder="password"
           value={enteredPw}
@@ -139,7 +139,7 @@ const SignInForm = styled.form`
 
 const Input = styled.input`
   background-color: #eee;
-  border: 1px solid #ccc;
+  border: 1px solid ${(prop) => (prop.outLine ? 'red' : '#dbdbdb')};
   border-radius: 0.3em;
   padding: 0.8em 0 0.8em 0.5em;
   margin-bottom: 0.5em;
@@ -147,14 +147,6 @@ const Input = styled.input`
   &:focus {
     outline: none;
   }
-`;
-
-const IdInput = styled(Input)`
-  border: 1px solid ${(prop) => (prop.outLine ? 'red' : '#dbdbdb')};
-`;
-
-const PwInput = styled(Input)`
-  border: 1px solid ${(prop) => (prop.outLine ? 'red' : '#dbdbdb')};
 `;
 
 const SignInBtn = styled.button`
