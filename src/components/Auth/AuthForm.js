@@ -87,8 +87,6 @@ const AuthForm = () => {
     if (currentPage === 'sign-up') signUp();
   };
 
-  const handleSignUp = () => navigate('/sign-up');
-
   const signInError = currentPage !== 'sign-up' && error && '올바르지 않은 이메일 혹은 비밀번호 입니다.';
   const signUpError = currentPage === 'sign-up' && signUpApiError && signUpApiError;
 
@@ -128,7 +126,7 @@ const AuthForm = () => {
         <SignUpSection>
           <Divider />
           계정이 없으신가요?
-          <button type="button" onClick={handleSignUp}>
+          <button type="button" onClick={() => navigate('/sign-up')}>
             Sign-up
           </button>
         </SignUpSection>

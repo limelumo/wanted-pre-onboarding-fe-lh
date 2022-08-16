@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
 import GlobalStyles from './styles/globalStyles';
 import Auth from './pages/Auth';
-import TodoLists from './pages/TodoLists';
+import TodoList from './pages/TodoList';
 
 function App() {
   return (
@@ -12,7 +12,7 @@ function App() {
       <div className="App">
         <Routes>
           <Route path="/" element={<Auth />} />
-          <Route path="/todo" element={<TodoLists />} />
+          <Route path="/todo" element={<TodoList />} />
           <Route path="/sign-up" element={<Auth />} />
           <Route path="*" element={<Navigate to={'/'} />} />
         </Routes>
