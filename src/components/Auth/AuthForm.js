@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 import styled from 'styled-components';
-import useInput from '../hooks/useInput';
+import useInput from '../../hooks/useInput';
+import useHttp from '../../hooks/useHttp';
 
 // 임시 유저 정보
 const userInfo = {
@@ -10,7 +11,7 @@ const userInfo = {
   pw: '1234qwer',
 };
 
-const SignIn = () => {
+const AuthForm = () => {
   const {
     value: enteredId,
     isValid: isValidId,
@@ -30,64 +31,75 @@ const SignIn = () => {
     reset: resetPw,
   } = useInput((value) => value.length >= 8);
 
+  const { token, httpError, sendRequest: fetchTask } = useHttp();
+
   const [btnActive, setBtnActive] = useState(false);
+  const [currentPage, setCurrentPage] = useState('');
 
   const idRef = useRef('');
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
+    setCurrentPage(location.pathname.split('/')[1]);
+
     if (isValidId && isValidPw) setBtnActive(true);
     if (!isValidId || !isValidPw) setBtnActive(false);
     if (enteredId === '' || enteredPw === '') setBtnActive(false);
-  }, [isValidId, isValidPw, enteredId, enteredPw]);
+  }, [location, isValidId, isValidPw, enteredId, enteredPw]);
 
-  const saveUserInfo = (id, pw, token) => {
-    localStorage.setItem('id', id);
-    localStorage.setItem('password', pw);
-    localStorage.setItem('token', token);
+  const resetInput = () => {
+    resetId();
+    resetPw();
+    idRef.current.focus();
   };
 
-  const submitUserInfo = async () => {
-    const response = await fetch('https://5co7shqbsf.execute-api.ap-northeast-2.amazonaws.com/production/auth/signin', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: enteredId, password: enteredPw }),
-    });
-
-    if (!response.ok) {
-      throw new Error('Something went wrong!');
+  const signInRequest = () => {
+    if (userInfo.id !== enteredId || userInfo.pw !== enteredPw) {
+      resetInput();
+      return;
     }
-
-    const responseData = await response.json();
-    const token = responseData.access_token;
-
-    saveUserInfo(enteredId, enteredPw, token);
+    fetchTask(enteredId, enteredPw, 'signin', 'POST');
     navigate('/todo');
   };
 
-  const handleUserInfo = (e) => {
-    e.preventDefault();
+  const signUpRequest = () => {
+    fetchTask(enteredId, enteredPw, 'signup', 'POST');
 
-    if (userInfo.id !== enteredId || userInfo.pw !== enteredPw) {
-      resetId();
-      resetPw();
-      idRef.current.focus();
+    // 존재하는 아이디인 경우, token = undefined
+    if (token === 'undefined') {
+      resetInput();
       return;
     }
-    submitUserInfo();
+
+    console.log(typeof token);
+
+    // 회원가입이 되었을 경우, alert 후 로그인 페이지 이동, token != undefined
+    if (token !== 'undefined' || token !== null || token.trim().length > 0) {
+      alert('정상적으로 가입되었습니다. 로그인 페이지로 이동합니다.');
+      // navigate('/');
+      return;
+    }
   };
 
-  const handleSignUp = () => {
-    navigate('/sign-up');
+  const submitUserInfo = (e) => {
+    e.preventDefault();
+    if (currentPage !== 'sign-up') signInRequest();
+    if (currentPage === 'sign-up') signUpRequest();
   };
+
+  const handleSignUp = () => navigate('/sign-up');
+
+  const signInError = currentPage !== 'sign-up' && error && '등록되지 않은 이메일 혹은 비밀번호 입니다.';
+  const signUpError = currentPage === 'sign-up' && httpError === '동일한 이메일이 이미 존재합니다.' && httpError;
 
   return (
     <SignInWrapper>
-      <SignInForm onSubmit={handleUserInfo}>
+      <SignInForm onSubmit={submitUserInfo}>
         <Input
           type="text"
-          placeholder="e-mail"
+          placeholder="E-mail"
           value={enteredId}
           onChange={handleIdChange}
           outLine={idInvalidClass}
@@ -97,33 +109,37 @@ const SignIn = () => {
 
         <Input
           type="password"
-          placeholder="password"
+          placeholder="Password"
           value={enteredPw}
           onChange={handlePwChange}
           outLine={pwInvalidClass}
           onBlur={handlePwBlur}
         />
 
-        <UserError>{error && '올바르지 않은 이메일 혹은 비밀번호입니다.'}</UserError>
+        <UserError>
+          {signInError}
+          {signUpError}
+        </UserError>
 
-        <SignInBtn disabled={!btnActive} color={btnActive ? btnActive.toString() : undefined}>
-          Sign-in
+        <SignInBtn type="submit" disabled={!btnActive} color={btnActive ? btnActive.toString() : undefined}>
+          {currentPage !== 'sign-up' ? 'Sign-in' : 'Sign-up'}
         </SignInBtn>
       </SignInForm>
 
-      <Divider />
-
-      <SignUpSection>
-        계정이 없으신가요?
-        <button type="button" onClick={handleSignUp}>
-          Sign-up
-        </button>
-      </SignUpSection>
+      {currentPage !== 'sign-up' && (
+        <SignUpSection>
+          <Divider />
+          계정이 없으신가요?
+          <button type="button" onClick={handleSignUp}>
+            Sign-up
+          </button>
+        </SignUpSection>
+      )}
     </SignInWrapper>
   );
 };
 
-const SignInWrapper = styled.div`
+const SignInWrapper = styled.section`
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -181,4 +197,4 @@ const SignUpSection = styled.section`
   }
 `;
 
-export default SignIn;
+export default AuthForm;
