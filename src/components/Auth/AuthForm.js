@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 
 import styled from 'styled-components';
 import useInput from '../../hooks/useInput';
-import useHttp from '../../hooks/useHttp';
+import { sendAuthRequest } from '../../api/auth';
 
 // 임시 유저 정보
 const userInfo = {
@@ -31,10 +31,9 @@ const AuthForm = () => {
     reset: resetPw,
   } = useInput((value) => value.length >= 8);
 
-  const { token, httpError, sendRequest: fetchTask } = useHttp();
-
   const [btnActive, setBtnActive] = useState(false);
   const [currentPage, setCurrentPage] = useState('');
+  const [signUpApiError, setSignUpApiError] = useState('');
 
   const idRef = useRef('');
 
@@ -55,44 +54,43 @@ const AuthForm = () => {
     idRef.current.focus();
   };
 
-  const signInRequest = () => {
+  const signIn = async () => {
     if (userInfo.id !== enteredId || userInfo.pw !== enteredPw) {
       resetInput();
       return;
     }
-    fetchTask(enteredId, enteredPw, 'signin', 'POST');
-    navigate('/todo');
+
+    const response = await sendAuthRequest(enteredId, enteredPw, 'signin');
+
+    if (response.status === 200) {
+      localStorage.setItem('token', response.token);
+      navigate('/todo', { replace: true });
+    }
   };
 
-  const signUpRequest = () => {
-    fetchTask(enteredId, enteredPw, 'signup', 'POST');
+  const signUp = async () => {
+    const response = await sendAuthRequest(enteredId, enteredPw, 'signup');
 
-    // 존재하는 아이디인 경우, token = undefined
-    if (token === 'undefined') {
+    if (response.status === 201) {
+      localStorage.setItem('token', response.token);
+      navigate('/todo', { replace: true });
+    } else {
+      setSignUpApiError('동일한 이메일이 이미 존재합니다.');
       resetInput();
-      return;
-    }
-
-    console.log(typeof token);
-
-    // 회원가입이 되었을 경우, alert 후 로그인 페이지 이동, token != undefined
-    if (token !== 'undefined' || token !== null || token.trim().length > 0) {
-      alert('정상적으로 가입되었습니다. 로그인 페이지로 이동합니다.');
-      // navigate('/');
-      return;
     }
   };
 
   const submitUserInfo = (e) => {
     e.preventDefault();
-    if (currentPage !== 'sign-up') signInRequest();
-    if (currentPage === 'sign-up') signUpRequest();
+
+    if (currentPage !== 'sign-up') signIn();
+    if (currentPage === 'sign-up') signUp();
   };
 
   const handleSignUp = () => navigate('/sign-up');
 
-  const signInError = currentPage !== 'sign-up' && error && '등록되지 않은 이메일 혹은 비밀번호 입니다.';
-  const signUpError = currentPage === 'sign-up' && httpError === '동일한 이메일이 이미 존재합니다.' && httpError;
+  const signInError = currentPage !== 'sign-up' && error && '올바르지 않은 이메일 혹은 비밀번호 입니다.';
+  const signUpError = currentPage === 'sign-up' && signUpApiError && signUpApiError;
 
   return (
     <SignInWrapper>
