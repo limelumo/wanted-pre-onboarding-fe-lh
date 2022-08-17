@@ -7,9 +7,8 @@ export const createTodoRequest = async (token, data) => {
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ todo: data }),
     });
-    const newTodo = await response.json();
 
-    return newTodo;
+    return { status: response.status }; 
   } catch (err) {
     console.log(err.response);
   }
