@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
-import { createTodoRequest, getTodoRequest } from '../../api/todo';
+import { createTodoRequest } from '../../api/todo';
 
-const NewTodo = ({ token }) => {
+const NewTodo = ({ token, getTodoData }) => {
   const [newTodo, setNewTodo] = useState('');
 
   const handleInputChange = (e) => {
@@ -20,7 +20,7 @@ const NewTodo = ({ token }) => {
     const response = await createTodoRequest(token, newTodo);
 
     if (response.status === 201) {
-      getTodoRequest(token);
+      getTodoData(token);
       setNewTodo('');
     }
   };
