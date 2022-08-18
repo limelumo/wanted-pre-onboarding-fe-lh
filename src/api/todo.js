@@ -8,7 +8,7 @@ export const createTodoRequest = async (token, data) => {
       body: JSON.stringify({ todo: data }),
     });
 
-    return { status: response.status }; 
+    return { status: response.status };
   } catch (err) {
     console.log(err.response);
   }
@@ -22,7 +22,7 @@ export const getTodoRequest = async (token) => {
     });
     const todoList = await response.json();
 
-    return { status: response.status, todoList };    
+    return { status: response.status, todoList };
   } catch (err) {
     console.log(err.response);
   }
@@ -35,8 +35,9 @@ export const updateTodoRequest = async (token, id, data, isCompleted) => {
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ todo: data, isCompleted: isCompleted }),
     });
+    const todoList = await response.json();
 
-    return { status: response.status };
+    return { status: response.status, todoList };
   } catch (err) {
     console.log(err.response);
   }
