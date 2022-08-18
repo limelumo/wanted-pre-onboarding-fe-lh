@@ -1,38 +1,30 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router';
 
 import styled from 'styled-components';
 
 import NewTodo from '../components/Todo/NewTodo';
-import Todos from '../components/Todo/Todos';
-import { getTodoRequest } from '../api/todo';
+import Todo from '../components/Todo/Todo';
+import AuthContext from '../store/AuthContext';
+import TodoContext from '../store/TodoContext';
 
 const TodoList = () => {
-  const [todoData, setTodoData] = useState([]);
-  const [token, setToken] = useState('');
+  const { token } = useContext(AuthContext);
+  const { getTodoData } = useContext(TodoContext);
 
   const navigate = useNavigate();
 
-  const getTodoData = async (token) => {
-    const response = await getTodoRequest(token);
-    setTodoData(response.todoList);
-  };
-
   useEffect(() => {
-    const token = localStorage.getItem('token');
-
     if (!token) navigate('/', { replace: true });
-
     if (token) {
       getTodoData(token);
-      setToken(token);
     }
-  }, [token, navigate]);
+  }, []);
 
   return (
     <TodoWrapper>
-      <NewTodo token={token} getTodoData={getTodoData} />
-      <Todos items={todoData} token={token} resetData={setTodoData} />
+      <NewTodo />
+      <Todo />
     </TodoWrapper>
   );
 };
