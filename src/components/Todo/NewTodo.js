@@ -1,9 +1,14 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 
 import { createTodoRequest } from '../../api/todo';
+import AuthContext from '../../store/AuthContext';
+import TodoContext from '../../store/TodoContext';
 
-const NewTodo = ({ token, getTodoData }) => {
+const NewTodo = () => {
   const [newTodo, setNewTodo] = useState('');
+
+  const { token } = useContext(AuthContext);
+  const { getTodoData } = useContext(TodoContext);
 
   const handleInputChange = (e) => {
     setNewTodo(e.target.value);
