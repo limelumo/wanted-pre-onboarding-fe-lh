@@ -48,9 +48,9 @@ const NewTodo = () => {
 };
 
 const NewTodoForm = styled.form`
-display: flex;
-justify-content: space-between;
-  margin-bottom: 5em;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6em;
 `;
 
 const NewTodoInput = styled.input`
@@ -65,7 +65,8 @@ const NewTodoInput = styled.input`
 `;
 
 const Button = styled.button`
-font-size: 2.2em;
+  font-size: 2.2em;
+  color: salmon;
 `;
 
 export default NewTodo;

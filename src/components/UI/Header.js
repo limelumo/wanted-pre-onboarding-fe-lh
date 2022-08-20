@@ -6,8 +6,9 @@ const Header = ({ text }) => {
 
 const Title = styled.h2`
   font-size: 2em;
-  margin-bottom: 1em;
+  margin-bottom: 2.2em;
   text-align: center;
+  color: #5F4D4B;
 `;
 
 export default Header;

@@ -15,6 +15,7 @@ ${reset}
     align-items: center;
     font-family: "Noto Sans KR", sans-serif;
     font-size: 14px;
+    user-select: none;
   }
 
   a {
@@ -26,6 +27,12 @@ ${reset}
     border: none;
     background: none;
     cursor: pointer;
+  }
+
+  .App {
+    width: 100vw;
+    display: flex;
+    justify-content: center;
   }
 `;
 
