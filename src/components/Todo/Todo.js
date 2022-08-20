@@ -22,17 +22,15 @@ const Todo = () => {
     );
   }
 
-  let list = todoList;
-
   return (
     <List>
-      <div>{list}</div>
+      <div>{todoList}</div>
     </List>
   );
 };
 
 const List = styled.section`
-  border: 1px solid red;
+  min-height: 16em;
 `;
 
 export default Todo;
