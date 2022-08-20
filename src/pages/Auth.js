@@ -37,12 +37,15 @@ const AuthForm = () => {
 
   useEffect(() => {
     setCurrentPage(location.pathname.split('/')[1]);
-    idRef.current.focus();
 
     if (isValidId && isValidPw) setBtnActive(true);
     if (!isValidId || !isValidPw) setBtnActive(false);
     if (enteredId === '' || enteredPw === '') setBtnActive(false);
   }, [location, isValidId, isValidPw, enteredId, enteredPw]);
+
+  useEffect(()=> {
+    idRef.current.focus();
+  }, [])
 
   const resetInput = () => {
     resetId();
@@ -159,15 +162,9 @@ const Input = styled.input`
   &:last-of-type {
     margin-bottom: 0;
   }
-
-  &:focus {
-    outline: none;
-  }
 `;
 
 const SignInBtn = styled.button`
-  outline: none;
-  border: none;
   background-color: ${(props) => (props.color ? 'salmon' : 'gray')};
   color: white;
   padding: 0.8em 0;
@@ -186,11 +183,8 @@ const SignUpSection = styled.section`
   margin-top: 1.6em;
 
   & button {
-    border: none;
-    outline: none;
     color: salmon;
     font-weight: bold;
-    background-color: transparent;
   }
 `;
 

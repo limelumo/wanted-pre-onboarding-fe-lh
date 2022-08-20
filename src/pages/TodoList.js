@@ -56,7 +56,6 @@ const SignOut = styled.section`
 
   button {
     font-size: 1.3em;
-    color: #5F4D4B;
     margin-left: 0.2em;
   }
 `;

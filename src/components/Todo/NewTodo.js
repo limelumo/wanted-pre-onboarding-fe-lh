@@ -58,10 +58,6 @@ const NewTodoInput = styled.input`
   padding: 1em 0;
   border: none;
   border-bottom: 1px solid gray;
-
-  &:focus {
-    outline: none;
-  }
 `;
 
 const Button = styled.button`

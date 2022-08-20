@@ -23,9 +23,19 @@ ${reset}
     color: #000;
   }
 
+  input {
+    background-color: transparent;
+
+    &:focus {
+    outline: none;
+  }
+  }
+
   button {
+    color: #5f4d4b;
     border: none;
-    background: none;
+    outline: none;
+    background: transparent;
     cursor: pointer;
   }
 

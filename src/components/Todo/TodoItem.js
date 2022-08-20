@@ -101,7 +101,6 @@ const ItemWrapper = styled.form`
   margin-bottom: 1em;
 
   button {
-    color: #5f4d4b;
     font-size: 1.12em;
 
     &:disabled {
@@ -134,11 +133,6 @@ const Content = styled.li`
 const EditInput = styled.input`
   width: 100%;
   border: none;
-  background-color: transparent;
-
-  &:focus {
-    outline: none;
-  }
 `;
 
 const EditBtns = styled.div`
