@@ -37,6 +37,7 @@ const AuthForm = () => {
 
   useEffect(() => {
     setCurrentPage(location.pathname.split('/')[1]);
+    idRef.current.focus();
 
     if (isValidId && isValidPw) setBtnActive(true);
     if (!isValidId || !isValidPw) setBtnActive(false);
@@ -47,6 +48,11 @@ const AuthForm = () => {
     resetId();
     resetPw();
     idRef.current.focus();
+  };
+
+  const moveToSignUp = () => {
+    navigate('/sign-up');
+    resetInput();
   };
 
   const moveToTodo = (token) => {
@@ -89,7 +95,7 @@ const AuthForm = () => {
       <SignInForm onSubmit={submitUserInfo}>
         <Input
           type="text"
-          placeholder="E-mail"
+          placeholder="E-mail (@포함)"
           value={enteredId}
           onChange={handleIdChange}
           outLine={idInvalidClass}
@@ -99,7 +105,7 @@ const AuthForm = () => {
 
         <Input
           type="password"
-          placeholder="Password"
+          placeholder="Password (8자리 이상)"
           value={enteredPw}
           onChange={handlePwChange}
           outLine={pwInvalidClass}
@@ -119,7 +125,7 @@ const AuthForm = () => {
       {currentPage !== 'sign-up' && (
         <SignUpSection>
           계정이 없으신가요?
-          <button type="button" onClick={() => navigate('/sign-up')}>
+          <button type="button" onClick={moveToSignUp}>
             Sign-up
           </button>
         </SignUpSection>
@@ -141,14 +147,18 @@ const SignInForm = styled.form`
   width: 24em;
   display: flex;
   flex-direction: column;
+  font-size: 1.1em;
 `;
 
 const Input = styled.input`
-  background-color: #eee;
   border: 1px solid ${(prop) => (prop.outLine ? 'red' : '#dbdbdb')};
   border-radius: 0.3em;
   padding: 0.8em 0 0.8em 0.5em;
-  margin-bottom: 0.5em;
+  margin-bottom: 0.7em;
+
+  &:last-of-type {
+    margin-bottom: 0;
+  }
 
   &:focus {
     outline: none;
@@ -160,23 +170,26 @@ const SignInBtn = styled.button`
   border: none;
   background-color: ${(props) => (props.color ? 'salmon' : 'gray')};
   color: white;
-  padding: 0.6em 0;
+  padding: 0.8em 0;
   border-radius: 0.3em;
-  margin: 0.5em 0 1em 0;
+  margin-top: 0.8em;
 `;
 
 const UserError = styled.p`
   color: salmon;
   text-align: center;
   font-weight: bold;
-  padding: 0.5em 0 1.5em;
+  margin: 1.5em 0;
 `;
 
 const SignUpSection = styled.section`
+  margin-top: 1.6em;
+
   & button {
     border: none;
     outline: none;
-    color: blue;
+    color: salmon;
+    font-weight: bold;
     background-color: transparent;
   }
 `;
