@@ -8,12 +8,14 @@ import TodoContext from '../../store/TodoContext';
 const Todo = () => {
   const { todoData } = useContext(TodoContext);
 
+  const sortedData = todoData.sort((a, b) => a.isCompleted - b.isCompleted || a - b);
+
   let todoList = <h2>Add your first Todo!</h2>;
 
   if (todoData.length > 0) {
     todoList = (
       <ul>
-        {todoData.map((item) => (
+        {sortedData.map((item) => (
           <TodoItem key={item.id} {...item} isCompleted={item.isCompleted}>
             {item.todo}
           </TodoItem>
@@ -24,7 +26,7 @@ const Todo = () => {
 
   return (
     <List>
-      <div>{todoList}</div>
+      <>{todoList}</>
     </List>
   );
 };
