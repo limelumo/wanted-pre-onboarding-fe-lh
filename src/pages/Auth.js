@@ -2,14 +2,9 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 import styled from 'styled-components';
+import Header from '../components/UI/Header';
 import useInput from '../hooks/useInput';
 import { sendAuthRequest } from '../api/auth';
-
-// 임시 유저 정보
-const userInfo = {
-  id: 'test1234@test.com',
-  pw: '1234qwer',
-};
 
 const AuthForm = () => {
   const {
@@ -60,19 +55,16 @@ const AuthForm = () => {
   };
 
   const signIn = async () => {
-    if (userInfo.id !== enteredId || userInfo.pw !== enteredPw) {
-      resetInput();
-      return;
-    }
-
     const response = await sendAuthRequest(enteredId, enteredPw, 'signin');
     if (response.status === 200) moveToTodo(response.token);
+    if (response.status === 404) resetInput();
   };
 
   const signUp = async () => {
     const response = await sendAuthRequest(enteredId, enteredPw, 'signup');
 
     if (response.status === 201) {
+      alert('정상적으로 가입되었습니다.');
       moveToTodo(response.token);
     } else {
       setSignUpApiError('동일한 이메일이 이미 존재합니다.');
@@ -92,6 +84,8 @@ const AuthForm = () => {
 
   return (
     <SignInWrapper>
+      {currentPage !== 'sign-up' ? <Header text={'Welcome back!'} /> : <Header text={'Sign Up'} />}
+
       <SignInForm onSubmit={submitUserInfo}>
         <Input
           type="text"
@@ -124,7 +118,6 @@ const AuthForm = () => {
 
       {currentPage !== 'sign-up' && (
         <SignUpSection>
-          <Divider />
           계정이 없으신가요?
           <button type="button" onClick={() => navigate('/sign-up')}>
             Sign-up
@@ -139,6 +132,7 @@ const SignInWrapper = styled.section`
   height: 100vh;
   display: flex;
   flex-direction: column;
+  align-items: center;
   justify-content: center;
   font-size: 0.8em;
 `;
@@ -178,13 +172,7 @@ const UserError = styled.p`
   padding: 0.5em 0 1.5em;
 `;
 
-const Divider = styled.hr`
-  margin: 1em 0 2em;
-  width: 100%;
-`;
-
 const SignUpSection = styled.section`
-  text-align: center;
   & button {
     border: none;
     outline: none;
