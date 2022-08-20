@@ -46,17 +46,18 @@ const TodoList = () => {
 };
 
 const TodoWrapper = styled.div`
-  min-width: 40em;
+  min-width: 34em;
+  color: #5F4D4B;
 `;
 
 const SignOut = styled.section`
   margin-top: 5em;
-  padding-top: 3em;
   text-align: center;
 
   button {
-    font-size: 1.2em;
-    margin-left: 0.4em;
+    font-size: 1.3em;
+    color: #5F4D4B;
+    margin-left: 0.2em;
   }
 `;
 

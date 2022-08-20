@@ -33,6 +33,9 @@ const Todo = () => {
 
 const List = styled.section`
   min-height: 16em;
+  max-height: 30em;
+  padding-right: 1em;
+  overflow-y: scroll;
 `;
 
 export default Todo;

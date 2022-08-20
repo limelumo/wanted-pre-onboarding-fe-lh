@@ -97,8 +97,17 @@ const ItemWrapper = styled.form`
   display: flex;
   justify-content: space-between;
   border-radius: 0.2em;
-  padding: 1em 0;
+  padding: 0.3em 0;
   margin-bottom: 1em;
+
+  button {
+    color: #5f4d4b;
+    font-size: 1.12em;
+
+    &:disabled {
+      color: lightgray;
+    }
+  }
 `;
 
 const Item = styled.ul`
@@ -108,11 +117,18 @@ const Item = styled.ul`
 
 const CheckBox = styled.input`
   margin-right: 0.8em;
+  width: 1.3em;
+  height: 1.3em;
+
+  &:checked {
+    accent-color: salmon;
+  }
 `;
 
 const Content = styled.li`
   width: 24em;
   text-decoration: ${(prop) => (prop.checked ? 'line-through' : 'none')};
+  color: ${(prop) => (prop.checked ? '#FFB6AB' : 'black')};
 `;
 
 const EditInput = styled.input`
