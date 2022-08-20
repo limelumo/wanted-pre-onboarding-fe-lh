@@ -5,6 +5,9 @@ import styled from 'styled-components';
 import { updateTodoRequest, deleteTodoRequest } from '../../api/todo';
 import TodoContext from '../../store/TodoContext';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrashCan, faPen, faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
+
 const TodoItem = ({ id, todo, isCompleted }) => {
   const [isEdit, setIsEdit] = useState(false);
 
@@ -49,20 +52,18 @@ const TodoItem = ({ id, todo, isCompleted }) => {
   const handleCheckCompleted = async () => {
     await updateTodoRequest(token, id, todo, !isCompleted);
     getTodoData(token);
-
-    // css 변경: checkbox disabled, edit 버튼 disabled
   };
 
   const onEditBtn = (
     <div>
       <Button type="button" onClick={handleCancel}>
-        취소
+        <FontAwesomeIcon icon={faXmark} />
       </Button>
-      <Button type="submit">완료</Button>
+      <Button type="submit">
+        <FontAwesomeIcon icon={faCheck} />
+      </Button>
     </div>
   );
-
-  // const checked = isCompleted ? true : false;
 
   return (
     <ItemWrapper onSubmit={handleEdit}>
@@ -70,40 +71,39 @@ const TodoItem = ({ id, todo, isCompleted }) => {
         <li>
           <CheckBox type="checkbox" checked={isCompleted} onChange={handleCheckCompleted} />
         </li>
-        <Content>{isEdit ? <EditInput type="text" value={editedTodo} onChange={handleChange} autoFocus /> : todo}</Content>
+        <Content checked={isCompleted}>
+          {isEdit ? <EditInput type="text" value={editedTodo} onChange={handleChange} autoFocus /> : todo}
+        </Content>
       </Item>
 
       <EditBtns>
         {isEdit ? (
           onEditBtn
         ) : (
-          <Button type="button" onClick={() => setIsEdit(true)}>
-            수정
+          <Button type="button" onClick={() => setIsEdit(true)} disabled={isCompleted}>
+            <FontAwesomeIcon icon={faPen} />
           </Button>
         )}
 
         <Button type="button" onClick={handleDelete}>
-          삭제
+          <FontAwesomeIcon icon={faTrashCan} />
         </Button>
       </EditBtns>
     </ItemWrapper>
   );
 };
 
-// edit 풀었을때 focus 안생기게
 const ItemWrapper = styled.form`
   display: flex;
   justify-content: space-between;
-  /* background-color: #eee; */
-  background-color: ${(prop) => (prop.checked ? '#eee' : 'white')};
-  border: 1px solid ${(prop) => (prop.checked ? '' : '#ccc')};
   border-radius: 0.2em;
-  padding: 1em;
+  padding: 1em 0;
   margin-bottom: 1em;
 `;
 
 const Item = styled.ul`
   display: flex;
+  align-items: center;
 `;
 
 const CheckBox = styled.input`
@@ -112,18 +112,21 @@ const CheckBox = styled.input`
 
 const Content = styled.li`
   width: 24em;
+  text-decoration: ${(prop) => (prop.checked ? 'line-through' : 'none')};
 `;
 
 const EditInput = styled.input`
   width: 100%;
-  padding: 1em;
   border: none;
   background-color: transparent;
+
+  &:focus {
+    outline: none;
+  }
 `;
 
 const EditBtns = styled.div`
-  min-width: 150px;
-  border: 1px solid red;
+  min-width: 4em;
   display: flex;
   justify-content: space-between;
 `;

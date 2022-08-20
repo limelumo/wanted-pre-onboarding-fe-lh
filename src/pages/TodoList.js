@@ -8,6 +8,9 @@ import Todo from '../components/Todo/Todo';
 import Header from '../components/UI/Header';
 import TodoContext from '../store/TodoContext';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+
 const TodoList = () => {
   const { getTodoData } = useContext(TodoContext);
 
@@ -27,26 +30,34 @@ const TodoList = () => {
 
   return (
     <TodoWrapper>
-      <Header text={'Todo List'} />
+      <Header text={'Your Todo List'} />
 
       <NewTodo />
       <Todo />
 
       <SignOut>
-        <button onClick={handleSignOut}>로그아웃</button>
+        Sign out
+        <button onClick={handleSignOut}>
+          <FontAwesomeIcon icon={faSignOutAlt} />
+        </button>
       </SignOut>
     </TodoWrapper>
   );
 };
 
 const TodoWrapper = styled.div`
-  min-width: 400px;
+  min-width: 40em;
 `;
 
 const SignOut = styled.section`
   margin-top: 5em;
   padding-top: 3em;
   text-align: center;
+
+  button {
+    font-size: 1.2em;
+    margin-left: 0.4em;
+  }
 `;
 
 export default TodoList;

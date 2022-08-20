@@ -8,7 +8,7 @@ import TodoContext from '../../store/TodoContext';
 const Todo = () => {
   const { todoData } = useContext(TodoContext);
 
-  let todoList = <h2>No Todo found.</h2>;
+  let todoList = <h2>Add your first Todo!</h2>;
 
   if (todoData.length > 0) {
     todoList = (
