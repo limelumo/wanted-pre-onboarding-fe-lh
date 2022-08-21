@@ -20,7 +20,13 @@ const useInput = (validateValue) => {
     if (e.target.value.trim() !== '') setError(false);
   };
 
-  const reset = () => {
+  const resetValue = () => {
+    setError(false);
+    setIsValid(false);
+    setEnteredValue('');
+  };
+
+  const showError = () => {
     setError(true);
     setIsValid(false);
     setEnteredValue('');
@@ -33,7 +39,8 @@ const useInput = (validateValue) => {
     isInvalid,
     handleBlur,
     handleChange,
-    reset,
+    resetValue,
+    showError,
   };
 };
 export default useInput;

@@ -14,7 +14,8 @@ const AuthForm = () => {
     isInvalid: idInvalidClass,
     handleBlur: handleIdBlur,
     handleChange: handleIdChange,
-    reset: resetId,
+    showError: showErrorId,
+    resetValue: resetId,
   } = useInput((value) => value.includes('@'));
 
   const {
@@ -23,7 +24,8 @@ const AuthForm = () => {
     isInvalid: pwInvalidClass,
     handleBlur: handlePwBlur,
     handleChange: handlePwChange,
-    reset: resetPw,
+    showError: showErrorPw,
+    resetValue: resetPw,
   } = useInput((value) => value.length >= 8);
 
   const [btnActive, setBtnActive] = useState(false);
@@ -43,19 +45,25 @@ const AuthForm = () => {
     if (enteredId === '' || enteredPw === '') setBtnActive(false);
   }, [location, isValidId, isValidPw, enteredId, enteredPw]);
 
-  useEffect(()=> {
+  useEffect(() => {
     idRef.current.focus();
-  }, [])
+  }, []);
 
-  const resetInput = () => {
-    resetId();
-    resetPw();
+  const showInputError = () => {
+    showErrorId();
+    showErrorPw();
     idRef.current.focus();
   };
 
-  const moveToSignUp = () => {
-    navigate('/sign-up');
-    resetInput();
+  const resetValue = () => {
+    resetId();
+    resetPw();
+  };
+
+  const moveToPage = (page) => {
+    navigate(page);
+    resetValue();
+    setSignUpApiError('');
   };
 
   const moveToTodo = (token) => {
@@ -66,18 +74,18 @@ const AuthForm = () => {
   const signIn = async () => {
     const response = await sendAuthRequest(enteredId, enteredPw, 'signin');
     if (response.status === 200) moveToTodo(response.token);
-    if (response.status === 404) resetInput();
+    if (response.status === 404) showInputError();
   };
 
   const signUp = async () => {
     const response = await sendAuthRequest(enteredId, enteredPw, 'signup');
 
     if (response.status === 201) {
-      alert('정상적으로 가입되었습니다.');
-      moveToTodo(response.token);
+      alert('정상적으로 가입되었습니다. 로그인 화면으로 이동합니다.');
+      moveToPage('/');
     } else {
       setSignUpApiError('동일한 이메일이 이미 존재합니다.');
-      resetInput();
+      showInputError();
     }
   };
 
@@ -125,11 +133,18 @@ const AuthForm = () => {
         </SignInBtn>
       </SignInForm>
 
-      {currentPage !== 'sign-up' && (
+      {currentPage !== 'sign-up' ? (
         <SignUpSection>
           계정이 없으신가요?
-          <button type="button" onClick={moveToSignUp}>
+          <button type="button" onClick={() => moveToPage('/sign-up')}>
             Sign-up
+          </button>
+        </SignUpSection>
+      ) : (
+        <SignUpSection>
+          로그인 화면으로 돌아가기
+          <button type="button" onClick={() => moveToPage('/')}>
+            Sign-in
           </button>
         </SignUpSection>
       )}
@@ -154,7 +169,7 @@ const SignInForm = styled.form`
 `;
 
 const Input = styled.input`
-  border: 1px solid ${(prop) => (prop.outLine ? 'red' : '#dbdbdb')};
+  border: 1px solid ${(prop) => (prop.outLine ? 'salmon' : '#dbdbdb')};
   border-radius: 0.3em;
   padding: 0.8em 0 0.8em 0.5em;
   margin-bottom: 0.7em;

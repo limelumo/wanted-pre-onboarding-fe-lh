@@ -9,6 +9,7 @@ const Title = styled.h2`
   margin-bottom: 2.2em;
   text-align: center;
   color: #5F4D4B;
+  font-weight: bold;
 `;
 
 export default Header;
