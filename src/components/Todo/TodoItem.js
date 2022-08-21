@@ -55,14 +55,14 @@ const TodoItem = ({ id, todo, isCompleted }) => {
   };
 
   const onEditBtn = (
-    <div>
+    <>
       <Button type="button" onClick={handleCancel}>
         <FontAwesomeIcon icon={faXmark} />
       </Button>
       <Button type="submit">
         <FontAwesomeIcon icon={faCheck} />
       </Button>
-    </div>
+    </>
   );
 
   return (
@@ -85,9 +85,11 @@ const TodoItem = ({ id, todo, isCompleted }) => {
           </Button>
         )}
 
-        <Button type="button" onClick={handleDelete}>
-          <FontAwesomeIcon icon={faTrashCan} />
-        </Button>
+        {isEdit ? null : (
+          <Button type="button" onClick={handleDelete}>
+            <FontAwesomeIcon icon={faTrashCan} />
+          </Button>
+        )}
       </EditBtns>
     </ItemWrapper>
   );
@@ -97,7 +99,7 @@ const ItemWrapper = styled.form`
   display: flex;
   justify-content: space-between;
   border-radius: 0.2em;
-  padding: 0.3em 0;
+  padding: 0.2em 0;
   margin-bottom: 1em;
 
   button {
@@ -128,11 +130,14 @@ const Content = styled.li`
   width: 24em;
   text-decoration: ${(prop) => (prop.checked ? 'line-through' : 'none')};
   color: ${(prop) => (prop.checked ? '#FFB6AB' : 'black')};
+  font-weight: ${(prop) => (prop.checked ? 'bold' : 'normal')};
 `;
 
 const EditInput = styled.input`
   width: 100%;
   border: none;
+  padding: 0;
+  font-size: 1.01em;
 `;
 
 const EditBtns = styled.div`
