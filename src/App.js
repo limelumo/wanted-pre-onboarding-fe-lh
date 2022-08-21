@@ -9,7 +9,7 @@ const TodoList = React.lazy(() => import('./pages/TodoList'));
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/wanted-pre-onboarding-fe">
       <GlobalStyles />
 
       <Suspense fallback={<div>Loading...</div>}>
