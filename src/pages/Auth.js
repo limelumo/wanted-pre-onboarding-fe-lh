@@ -46,8 +46,11 @@ const AuthForm = () => {
   }, [location, isValidId, isValidPw, enteredId, enteredPw]);
 
   useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) navigate('/todo');
+
     idRef.current.focus();
-  }, []);
+  }, [navigate]);
 
   const showInputError = () => {
     showErrorId();

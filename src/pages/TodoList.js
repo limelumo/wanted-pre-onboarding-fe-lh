@@ -16,12 +16,12 @@ const TodoList = () => {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const token = localStorage.getItem('token');
+  const token = localStorage.getItem('token');
 
+  useEffect(() => {
     if (!token) navigate('/', { replace: true });
     else getTodoData(token);
-  }, [navigate]);
+  }, [navigate, token]);
 
   const handleSignOut = () => {
     localStorage.removeItem('token');
@@ -29,25 +29,31 @@ const TodoList = () => {
   };
 
   return (
-    <TodoWrapper>
-      <Header text={'Your Todo List'} />
+    <>
+      {token ? (
+        <TodoWrapper>
+          <Header text={'Your Todo List'} />
 
-      <NewTodo />
-      <Todo />
+          <NewTodo />
+          <Todo />
 
-      <SignOut>
-        Sign out
-        <button onClick={handleSignOut}>
-          <FontAwesomeIcon icon={faSignOutAlt} />
-        </button>
-      </SignOut>
-    </TodoWrapper>
+          <SignOut>
+            Sign out
+            <button onClick={handleSignOut}>
+              <FontAwesomeIcon icon={faSignOutAlt} />
+            </button>
+          </SignOut>
+        </TodoWrapper>
+      ) : (
+        <div></div>
+      )}
+    </>
   );
 };
 
 const TodoWrapper = styled.div`
   min-width: 34em;
-  color: #5F4D4B;
+  color: #5f4d4b;
 `;
 
 const SignOut = styled.section`
